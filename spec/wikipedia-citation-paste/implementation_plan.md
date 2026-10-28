@@ -65,7 +65,7 @@ None at this time. Resolved at approval:
 - [x] **TASK-4:** Add `manifest.json` (`id: wikipedia-helper`, `name: Wikipedia Helper`, `version: 0.1.0`, `minAppVersion: 1.4.0`, `isDesktopOnly: false`, author Corey Struzan), `versions.json` (`{"0.1.0": "1.4.0"}`) and `version-bump.mjs` copied from obsidian-project-docs.
 
 #### [NEW] `LICENSE`, `README.md`, `CHANGELOG.md`
-- [ ] **TASK-5:** Add the MIT license (Corey Struzan), a README, and a CHANGELOG with an `Unreleased` section. The README covers what goes wrong and why, what the plugin changes (with a before/after example in synthetic text), the site list and the unknown-source setting, the repair command, how it coexists with other paste plugins, and installing with BRAT (add `coreyx/obsidian-wikipedia-helper`).
+- [x] **TASK-5:** Add the MIT license (Corey Struzan), a README, and a CHANGELOG with an `Unreleased` section. The README covers what goes wrong and why, what the plugin changes (with a before/after example in synthetic text), the site list and the unknown-source setting, the repair command, how it coexists with other paste plugins, and installing with BRAT (add `coreyx/obsidian-wikipedia-helper`).
 
 ### Finding the citations (pure functions, no Obsidian imports)
 
