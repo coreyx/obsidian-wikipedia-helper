@@ -91,8 +91,8 @@ None at this time. Resolved at approval:
   - Either way, the plugin disarms after that one transaction or on the next task (`setTimeout(0)`), whichever comes first. A paste that never produced a change (another handler took it) can't make the plugin edit a later, unrelated change.
 
 #### [NEW] `src/main.ts`
-- [ ] **TASK-14:** `WikipediaHelperPlugin` (`Plugin`): on load, read settings, add the TASK-13 extension with `registerEditorExtension`, and register the `editor-paste` handler with `registerEvent`.
-- [ ] **TASK-15:** `handlePaste(evt, editor)` decides whether to act and, if so, arms the plugin. It never calls `preventDefault()`.
+- [x] **TASK-14:** `WikipediaHelperPlugin` (`Plugin`): on load, read settings, add the TASK-13 extension with `registerEditorExtension`, and register the `editor-paste` handler with `registerEvent`.
+- [x] **TASK-15:** `handlePaste(evt, editor)` decides whether to act and, if so, arms the plugin. It never calls `preventDefault()`.
   - It returns without doing anything when the plugin is disabled, `evt.defaultPrevented` is set, `evt.clipboardData` is null or holds files, there's no `text/html`, or `autoConvertHtml` is off.
   - Otherwise it parses the HTML and takes `findCitationLinks`; with none found, it returns.
   - It then decides on the source. With `settings.anySite` on, the source isn't checked. Otherwise it reads `readSourceUrl()`, and a known address must pass `hostMatches(url, settings.sites)`. An unknown one follows `settings.unknownSource`: `"citation-markup"` acts only when `hasMediaWikiCitationMarkup`, and `"skip"` doesn't act.
