@@ -29,7 +29,7 @@ The plugin follows Obsidian's **Settings → Editor → Auto convert HTML** swit
 ## Settings
 
 - **Fix citation links on paste.** Turns the paste fix on or off.
-- **Sites.** One site per line, `wikipedia.org` by default. A site covers its subdomains, so `wikipedia.org` includes `en.wikipedia.org` and `en.m.wikipedia.org`. Entries are tidied when saved: `https://www.Example.org/wiki` is stored as `example.org`.
+- **Sites.** One site per line, `wikipedia.org` by default. A site covers its subdomains, so `wikipedia.org` includes `en.wikipedia.org` and `en.m.wikipedia.org`. Entries are tidied when saved: `https://www.Example.org/wiki` is stored as `example.org`. With no sites listed, only pastes whose source page is unknown can be fixed; the **Restore default** button beside the list puts `wikipedia.org` back.
 - **When the source site is unknown.** On desktop, the plugin reads the copied page's address from the clipboard. Some browsers don't record it, and on mobile it isn't available. Then the plugin can either act only when the copied HTML has Wikipedia's citation markup (the default), or skip the paste.
 - **Fix citation links from any site.** Off by default. When on, the same targeted fix applies to bracketed links copied from any page, and the two settings above don't apply.
 

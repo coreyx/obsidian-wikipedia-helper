@@ -1,5 +1,5 @@
 import { type App, type Plugin, PluginSettingTab, Setting } from "obsidian";
-import type { WikipediaHelperSettings } from "./settings";
+import { DEFAULT_SETTINGS, type WikipediaHelperSettings } from "./settings";
 import { normalizeSites } from "./sites";
 
 /** What the settings tab needs from the plugin: its settings, and a way to save them. */
@@ -42,12 +42,14 @@ export class WikipediaHelperSettingTab extends PluginSettingTab {
     new Setting(containerEl)
       .setName("Sites")
       .setDesc(
-        "Pastes copied from these sites are fixed. One per line; each includes its subdomains, so wikipedia.org covers en.wikipedia.org.",
+        "Pastes copied from these sites are fixed. One per line; each includes its subdomains, so wikipedia.org covers en.wikipedia.org. With no sites listed, only pastes whose source page is unknown can be fixed.",
       )
       .setDisabled(settings.anySite)
       .addTextArea((text) => {
         text
-          .setPlaceholder("wikipedia.org")
+          // Not a site name: a placeholder that looks like an entry makes an empty list look
+          // like the default one.
+          .setPlaceholder("One site per line")
           .setValue(settings.sites.join("\n"))
           .setDisabled(settings.anySite)
           .onChange(async (value) => {
@@ -55,7 +57,18 @@ export class WikipediaHelperSettingTab extends PluginSettingTab {
             await this.host.saveSettings();
           });
         text.inputEl.rows = 4;
-      });
+      })
+      .addExtraButton((button) =>
+        button
+          .setIcon("rotate-ccw")
+          .setTooltip("Restore default")
+          .setDisabled(settings.anySite)
+          .onClick(async () => {
+            settings.sites = [...DEFAULT_SETTINGS.sites];
+            await this.host.saveSettings();
+            this.display();
+          }),
+      );
 
     new Setting(containerEl)
       .setName("When the source site is unknown")
