@@ -24,6 +24,8 @@ export default defineConfig([
     rules: {
       "no-console": "off",
       "no-undef": "off",
+      // The test stands in a Node global for Obsidian's window.
+      "obsidianmd/no-global-this": "off",
       // Build scripts run in Node, never on mobile.
       "obsidianmd/no-nodejs-modules": "off",
       "obsidianmd/rule-custom-message": "off",

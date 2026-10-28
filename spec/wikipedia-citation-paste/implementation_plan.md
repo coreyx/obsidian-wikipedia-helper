@@ -122,7 +122,7 @@ None at this time. Resolved at approval:
 ### Verification
 
 #### [NEW] `scratch/test_citation_paste.ts`
-- [ ] **TASK-20:** Write the regression script (see Automated Tests below) and get it passing.
+- [x] **TASK-20:** Write the regression script (see Automated Tests below) and get it passing.
 
 #### [MODIFY] `spec/wikipedia-citation-paste/implementation_plan.md`
 - [ ] **TASK-21:** Install the build into the test vault (copy `main.js` and `manifest.json` into `.obsidian/plugins/wikipedia-helper/`), run Manual Verification steps 1–6, and record each result here.
