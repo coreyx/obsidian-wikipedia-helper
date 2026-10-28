@@ -20,7 +20,7 @@ Obsidian's paste runs exactly as it always does. For a paste copied from a site 
 Example text with a claim.[\[4\]](https://en.wikipedia.org/wiki/Example#cite_note-4)
 ```
 
-That renders as a clickable `[4]` that opens the footnote on Wikipedia. The fix is part of the paste itself, so one Ctrl+Z undoes both.
+That renders as a clickable `[4]` that opens the footnote on Wikipedia. The fix is part of the paste itself, so undoing the paste undoes the fix with it. In Live Preview, Obsidian shows the escaped brackets as dimmed `[` `]` around the link while Reading view shows just `[4]`; that's how its editor displays escapes.
 
 The plugin never cancels a paste and never converts HTML itself. Only links whose whole text is one bracketed label, such as `[4]`, `[a]` or `[citation needed]`, are changed, and only where the label and address match a link in the copied HTML. Literal `[[Note]]` text, ordinary links and every other part of the paste are left as Obsidian wrote them.
 
