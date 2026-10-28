@@ -85,7 +85,7 @@ None at this time. Resolved at approval:
 - [x] **TASK-12:** `readSourceUrl(): string | null`: synchronously read the copied page's address from Electron's clipboard: Windows `HTML Format` through `sourceUrlFromHtmlFormat`, then `org.chromium.source-url`, then Safari's `com.apple.webarchive`. Each read is wrapped in `try`/`catch`. The function returns `null` when Electron isn't available (mobile) or nothing gives an `http(s)` address.
 
 #### [NEW] `src/pasteFix.ts`
-- [ ] **TASK-13:** `PendingPaste` state plus the CodeMirror extension that applies the fix, implemented in whichever form TASK-1 shows works:
+- [x] **TASK-13:** `PendingPaste` state plus the CodeMirror extension that applies the fix, implemented in whichever form TASK-1 shows works:
   - The preferred form is an `EditorState.transactionFilter`. It takes the first doc-changing transaction after the plugin arms it, and only if that transaction is the paste per TASK-1's findings. It runs `fixCitationLinks` over that transaction's inserted text only, and returns it with the adjusted insert and the cursor moved to the end of the new text.
   - The fallback is a one-shot `EditorView.updateListener` that dispatches the same targeted replacements as a follow-up transaction.
   - Either way, the plugin disarms after that one transaction or on the next task (`setTimeout(0)`), whichever comes first. A paste that never produced a change (another handler took it) can't make the plugin edit a later, unrelated change.

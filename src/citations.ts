@@ -148,18 +148,34 @@ function decodeSafely(url: string): string {
   }
 }
 
+/** The result of fixing links in a piece of Markdown. */
+export interface LinkFix {
+  /** The Markdown with the fixed links' inner brackets escaped. */
+  text: string;
+  /** How many links were fixed. */
+  count: number;
+  /**
+   * Offsets in the original Markdown, ascending, at which a backslash was inserted. An editor can
+   * apply these as single-character insertions instead of replacing the whole text, which leaves
+   * the cursor and every other position where it was.
+   */
+  escapeAt: number[];
+}
+
 /**
  * Rewrites the given mangled links to `[\[label\]](target)`, which renders as a link reading
- * `[label]`. Only the opening `[[label]]` of each changes; every other character is kept.
+ * `[label]`. Only two backslashes are added to each, inside its opening `[[label]]`; every other
+ * character is kept.
  */
-function escapeLinks(markdown: string, links: readonly MangledLink[]): string {
+function escapeLinks(markdown: string, links: readonly MangledLink[]): LinkFix {
+  const escapeAt = links.flatMap((link) => [link.start + 1, link.start + 2 + link.rawLabel.length]);
   let text = "";
   let copied = 0;
-  for (const link of links) {
-    text += markdown.slice(copied, link.start) + `[\\[${link.rawLabel}\\]]`;
-    copied = link.start + link.rawLabel.length + 4;
+  for (const offset of escapeAt) {
+    text += `${markdown.slice(copied, offset)}\\`;
+    copied = offset;
   }
-  return text + markdown.slice(copied);
+  return { text: text + markdown.slice(copied), count: links.length, escapeAt };
 }
 
 /**
@@ -169,16 +185,13 @@ function escapeLinks(markdown: string, links: readonly MangledLink[]): string {
  * title, so it matches however the converter wrote it. Anything not recorded, literal `[[Note]]`
  * text included, is returned unchanged.
  */
-export function fixCitationLinks(
-  markdown: string,
-  links: readonly CitationLink[],
-): { text: string; count: number } {
+export function fixCitationLinks(markdown: string, links: readonly CitationLink[]): LinkFix {
   const recorded = new Set(links.map((link) => `${link.label}\n${decodeSafely(link.href)}`));
   const matched = findMangledLinks(markdown).filter((link) => {
     const label = collapseWhitespace(unescapeMarkdown(link.rawLabel));
     return recorded.has(`${label}\n${decodeSafely(link.target)}`);
   });
-  return { text: escapeLinks(markdown, matched), count: matched.length };
+  return escapeLinks(markdown, matched);
 }
 
 /**
@@ -187,12 +200,9 @@ export function fixCitationLinks(
  * absolute `http(s)` address on a listed site, so a real wikilink followed by a parenthetical
  * (`[[Note]](aside)`) is never touched.
  */
-export function repairMangledLinks(
-  markdown: string,
-  sites: readonly string[],
-): { text: string; count: number } {
+export function repairMangledLinks(markdown: string, sites: readonly string[]): LinkFix {
   const matched = findMangledLinks(markdown).filter(
     (link) => /^https?:\/\//i.test(link.target) && hostMatches(link.target, sites),
   );
-  return { text: escapeLinks(markdown, matched), count: matched.length };
+  return escapeLinks(markdown, matched);
 }
