@@ -71,7 +71,7 @@ None at this time. Resolved at approval:
 
 #### [NEW] `src/sites.ts`
 - [x] **TASK-6:** `hostMatches(url: string, sites: string[]): boolean`: true when the URL's hostname equals a listed site or ends with `.` + it, compared case-insensitively. Entries are normalized when saved: lowercased, with a scheme, `www.`, path and port removed. An unparseable URL matches nothing.
-- [ ] **TASK-7:** `sourceUrlFromHtmlFormat(cfHtml: string): string | null`: pull the `SourceURL:` line out of a Windows `HTML Format` clipboard entry.
+- [x] **TASK-7:** `sourceUrlFromHtmlFormat(cfHtml: string): string | null`: pull the `SourceURL:` line out of a Windows `HTML Format` clipboard entry.
 
 #### [NEW] `src/citations.ts`
 - [ ] **TASK-8:** `findCitationLinks(root: ParentNode): CitationLink[]`: every `a[href]` whose whole trimmed text is one bracketed label with no inner brackets (`[4]`, `[a]`, `[citation needed]`), returned as `{ label, href }`. Links whose text merely contains brackets are skipped: they don't produce `[[`, so they aren't broken.

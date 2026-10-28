@@ -24,6 +24,19 @@ export function normalizeSites(entries: readonly string[]): string[] {
 }
 
 /**
+ * Pulls the copied page's address out of a Windows `HTML Format` clipboard entry, whose plain-text
+ * header (`Version:`, `StartHTML:`, …) carries a `SourceURL:` line when the browser recorded one.
+ * Only the header, before the first `<`, is searched, so text inside the copied HTML can't pose as
+ * the source. Returns `null` when there's no such line.
+ */
+export function sourceUrlFromHtmlFormat(cfHtml: string): string | null {
+  const markupStart = cfHtml.indexOf("<");
+  const header = markupStart === -1 ? cfHtml : cfHtml.slice(0, markupStart);
+  const match = /^SourceURL:[ \t]*(\S+)[ \t]*$/im.exec(header);
+  return match?.[1] ?? null;
+}
+
+/**
  * Says whether a page address belongs to one of the listed sites. A site covers its subdomains,
  * so `wikipedia.org` matches `en.wikipedia.org` and `en.m.wikipedia.org`, but not
  * `notwikipedia.org`. An address that can't be parsed matches nothing.
