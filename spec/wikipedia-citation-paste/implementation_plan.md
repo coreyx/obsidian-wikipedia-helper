@@ -125,8 +125,20 @@ None at this time. Resolved at approval:
 - [x] **TASK-20:** Write the regression script (see Automated Tests below) and get it passing.
 
 #### [MODIFY] `spec/wikipedia-citation-paste/implementation_plan.md`
-- [ ] **TASK-21:** Install the build into the test vault (copy `main.js` and `manifest.json` into `.obsidian/plugins/wikipedia-helper/`), run Manual Verification steps 1–6, and record each result here.
-- [ ] **TASK-22:** Run Manual Verification steps 7–11 (with paste-with-source and link-or-card enabled, and the unknown-source cases) and record the results here.
+- [x] **TASK-21:** Install the build into the test vault (copy `main.js` and `manifest.json` into `.obsidian/plugins/wikipedia-helper/`), run Manual Verification steps 1–6, and record each result here.
+  - Run by hand in the test vault, then repeated in a sandboxed Obsidian 1.14.5 driven over DevTools with real Chrome copies, all with paste-with-source and link-or-card enabled.
+  - Step 1: pass. All 7 citations read `[\[n\]](…)` and open their footnotes in Reading view. In Live Preview, Obsidian draws the escaped brackets as dimmed `[` `]` around the linked `[n]`; that's how its editor shows escapes, and Reading view is clean.
+  - Step 2: pass. The plugin-off paste differs only by the backslashes.
+  - Step 3: pass. With paste-with-source off, one Ctrl+Z undoes the paste and its fix. With it on, its "From: …" line is its own undo step, with or without this plugin, so two presses may be needed (one by hand, two over DevTools).
+  - Step 4: pass. A section with 3 tables, 2 images and 2 lists pastes identically on and off apart from 42 escaped citations.
+  - Step 5: pass. A paragraph from a site that isn't listed pastes identically on and off.
+  - Step 6: pass. The repair turns the broken paste into exactly the on-paste result, reports "Repaired 7 citation links.", and one Ctrl+Z restores the original.
+- [x] **TASK-22:** Run Manual Verification steps 7–11 (with paste-with-source and link-or-card enabled, and the unknown-source cases) and record the results here.
+  - Step 7: pass. Citations fixed, "From: …" appears once, after the pasted text.
+  - Step 8: Shift+Insert passes. The right-click **Paste (Default Handler) + Source URL** inserts only the "From: …" line: paste-with-source's handler for that item inserts an empty paste plus the citation, with or without this plugin, so it's outside this plugin.
+  - Step 9: pass. link-or-card's card appears for a bare URL.
+  - Step 10: pass. Ctrl+Shift+V pastes plain text, unchanged.
+  - Step 11: pass. A minecraft.wiki paste with a `sup.reference` citation is left alone while the site isn't listed, fixed once it's added, and fixed with **Fix citation links from any site** on. A Wikipedia paste is left alone once `wikipedia.org` is removed. HTML with citation markup and no source address is fixed under "citation-markup" and left alone under "skip".
 
 ## Verification Plan
 
