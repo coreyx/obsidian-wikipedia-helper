@@ -111,7 +111,7 @@ None at this time. Resolved at approval:
 ### CI and release
 
 #### [NEW] `.github/workflows/ci.yml`
-- [ ] **TASK-18:** On push to `main`, pull requests and manual dispatch, run on ubuntu-latest: install with the pinned pnpm, then `lint`, `format`, `build` and `test:scratch`.
+- [x] **TASK-18:** On push to `main`, pull requests and manual dispatch, run on ubuntu-latest: install with the pinned pnpm, then `lint`, `format`, `build` and `test:scratch`.
 
 #### [NEW] `.github/workflows/release.yml`
 - [ ] **TASK-19:** Adapted from obsidian-project-docs. On a bare version tag (`0.1.0`) or a pre-release tag (`0.1.0-beta.1`):
