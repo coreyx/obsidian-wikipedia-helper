@@ -50,3 +50,131 @@ export function hasMediaWikiCitationMarkup(root: ParentNode): boolean {
       anchor.closest("sup.reference") !== null || link.href.includes("#cite_note-"),
   );
 }
+
+/** One `[[label]](target …)` found in Markdown text. */
+interface MangledLink {
+  /** Where the opening `[[` starts. */
+  start: number;
+  /** The label as written between `[[` and `]]`. */
+  rawLabel: string;
+  /** The link target with Markdown escapes undone and any `<…>` wrapping removed. */
+  target: string;
+}
+
+/**
+ * Where a converted link's closing parenthesis ends, and its target, given the index just after
+ * `](`. Follows CommonMark's link syntax closely enough for converter output: a target is either
+ * `<…>` or a run with balanced parentheses and backslash escapes, optionally followed by a quoted
+ * or parenthesized title. Returns `null` when the text isn't a complete link there.
+ */
+function parseLinkTail(text: string, from: number): { end: number; rawTarget: string } | null {
+  let i = from;
+  let rawTarget: string;
+  if (text[i] === "<") {
+    const close = text.indexOf(">", i + 1);
+    if (close === -1 || text.slice(i, close).includes("\n")) return null;
+    rawTarget = text.slice(i + 1, close);
+    i = close + 1;
+  } else {
+    let depth = 0;
+    while (i < text.length) {
+      const c = text[i];
+      if (c === "\\") {
+        i += 2;
+        continue;
+      }
+      if (c === "(") depth++;
+      else if (c === ")") {
+        if (depth === 0) break;
+        depth--;
+      } else if (c === undefined || /\s/.test(c)) break;
+      i++;
+    }
+    rawTarget = text.slice(from, i);
+  }
+  while (text[i] === " " || text[i] === "\t") i++;
+  const opener = text[i];
+  if (opener === '"' || opener === "'" || opener === "(") {
+    const closer = opener === "(" ? ")" : opener;
+    i++;
+    while (i < text.length && text[i] !== closer) {
+      if (text[i] === "\n") return null;
+      i += text[i] === "\\" ? 2 : 1;
+    }
+    if (i >= text.length) return null;
+    i++;
+    while (text[i] === " " || text[i] === "\t") i++;
+  }
+  if (text[i] !== ")") return null;
+  return { end: i + 1, rawTarget };
+}
+
+/** Undoes Markdown backslash escapes: `Orchestration_\(computing\)` → `Orchestration_(computing)`. */
+function unescapeMarkdown(text: string): string {
+  return text.replace(/\\([^\w\s])/g, "$1");
+}
+
+/**
+ * Every `[[label]](target)` in Markdown text whose label holds no brackets or newline. A `[[`
+ * preceded by an unescaped backslash is literal text, not a link, and is skipped.
+ */
+function findMangledLinks(markdown: string): MangledLink[] {
+  const found: MangledLink[] = [];
+  const opening = /\[\[([^[\]\n]+)\]\]\(/g;
+  for (let match = opening.exec(markdown); match; match = opening.exec(markdown)) {
+    let backslashes = 0;
+    while (markdown[match.index - 1 - backslashes] === "\\") backslashes++;
+    if (backslashes % 2 === 1) continue;
+    const tail = parseLinkTail(markdown, opening.lastIndex);
+    if (!tail) continue;
+    found.push({
+      start: match.index,
+      rawLabel: match[1] ?? "",
+      target: unescapeMarkdown(tail.rawTarget),
+    });
+    opening.lastIndex = tail.end;
+  }
+  return found;
+}
+
+/** Decodes percent-escapes where they're valid, so `%28` and `(` compare equal. */
+function decodeSafely(url: string): string {
+  try {
+    return decodeURI(url);
+  } catch {
+    return url;
+  }
+}
+
+/**
+ * Rewrites the given mangled links to `[\[label\]](target)`, which renders as a link reading
+ * `[label]`. Only the opening `[[label]]` of each changes; every other character is kept.
+ */
+function escapeLinks(markdown: string, links: readonly MangledLink[]): string {
+  let text = "";
+  let copied = 0;
+  for (const link of links) {
+    text += markdown.slice(copied, link.start) + `[\\[${link.rawLabel}\\]]`;
+    copied = link.start + link.rawLabel.length + 4;
+  }
+  return text + markdown.slice(copied);
+}
+
+/**
+ * Fixes the citation links in Markdown that Obsidian's paste just produced from HTML: each
+ * `[[label]](target)` whose label and target match a link recorded from that HTML becomes
+ * `[\[label\]](target)`. The target is compared after undoing Markdown escapes and ignoring any
+ * title, so it matches however the converter wrote it. Anything not recorded, literal `[[Note]]`
+ * text included, is returned unchanged.
+ */
+export function fixCitationLinks(
+  markdown: string,
+  links: readonly CitationLink[],
+): { text: string; count: number } {
+  const recorded = new Set(links.map((link) => `${link.label}\n${decodeSafely(link.href)}`));
+  const matched = findMangledLinks(markdown).filter((link) => {
+    const label = collapseWhitespace(unescapeMarkdown(link.rawLabel));
+    return recorded.has(`${label}\n${decodeSafely(link.target)}`);
+  });
+  return { text: escapeLinks(markdown, matched), count: matched.length };
+}
