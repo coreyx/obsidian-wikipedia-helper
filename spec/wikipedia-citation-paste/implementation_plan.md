@@ -59,7 +59,7 @@ None at this time. Resolved at approval:
 - [x] **TASK-2:** Create the package (`private`, MIT, author Corey Struzan, `"type": "module"`, pnpm and Node ≥ 22 as in obsidian-project-docs), with scripts `build` (`tsc --noEmit && node esbuild.config.mjs production`), `dev`, `lint`, `format`, `test:scratch` (`tsx scratch/test_citation_paste.ts`) and `version` (`node version-bump.mjs && git add manifest.json versions.json`). Dev dependencies: `obsidian`, `@codemirror/state`, `@codemirror/view`, `typescript`, `esbuild`, `tsx`, `eslint` + `eslint-plugin-obsidianmd`, `prettier`, `@types/node`, and `turndown` + `happy-dom` for the scratch test only.
 
 #### [NEW] `tsconfig.json`, `esbuild.config.mjs`, `eslint.config.mjs`, `.prettierrc.json`, `.prettierignore`, `.gitignore`, `.gitattributes`
-- [ ] **TASK-3:** Add the build and lint config, adapted from obsidian-project-docs: esbuild bundles `src/main.ts` to `main.js` as CJS with `obsidian`, `electron`, `@codemirror/*` and `@lezer/*` external; strict TypeScript; `.gitignore` covers `node_modules/`, `main.js`, `data.json` and `spike/`.
+- [x] **TASK-3:** Add the build and lint config, adapted from obsidian-project-docs: esbuild bundles `src/main.ts` to `main.js` as CJS with `obsidian`, `electron`, `@codemirror/*` and `@lezer/*` external; strict TypeScript; `.gitignore` covers `node_modules/`, `main.js`, `data.json` and `spike/`.
 
 #### [NEW] `manifest.json`, `versions.json`, `version-bump.mjs`
 - [ ] **TASK-4:** Add `manifest.json` (`id: wikipedia-helper`, `name: Wikipedia Helper`, `version: 0.1.0`, `minAppVersion: 1.4.0`, `isDesktopOnly: false`, author Corey Struzan), `versions.json` (`{"0.1.0": "1.4.0"}`) and `version-bump.mjs` copied from obsidian-project-docs.
