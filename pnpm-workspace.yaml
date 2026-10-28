@@ -1,0 +1,14 @@
+# pnpm's settings for this single-package repo.
+
+# Dependencies' install scripts run only when allowed. esbuild's fetches its platform binary.
+allowBuilds:
+  esbuild: true
+
+# eslint-plugin-obsidianmd's rules want an exact older obsidian, while the plugin builds against
+# newer type declarations; any version works for linting.
+peerDependencyRules:
+  allowedVersions:
+    eslint-plugin-obsidianmd>obsidian: "*"
+
+# `pnpm version` tags the bare version (0.1.0, not v0.1.0), which Obsidian and BRAT expect.
+tagVersionPrefix: ""
