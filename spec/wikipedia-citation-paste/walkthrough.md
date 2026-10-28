@@ -59,7 +59,7 @@ To repeat the core check: with the plugin enabled, copy the lead paragraph of ht
 
 ## Follow-ups
 - Published: `main` is on [coreyx/obsidian-wikipedia-helper](https://github.com/coreyx/obsidian-wikipedia-helper), and [0.1.0-beta.1](https://github.com/coreyx/obsidian-wikipedia-helper/releases/tag/0.1.0-beta.1) is a GitHub pre-release with `main.js` and `manifest.json`, installable with BRAT. The Release workflow didn't run on the tag's first push, made right after the first push to the new repo, so the tag was deleted and pushed again on the same commit.
-- Sites setting: an empty list shows the `wikipedia.org` placeholder, so it looks like the default. A clearer placeholder and a Restore default button would fix that.
+- Sites setting: an empty list shows the `wikipedia.org` placeholder, so it looks like the default. Fixed in 0.1.0 with a clearer placeholder and a Restore default button.
 - paste-with-source: "Paste (Default Handler) + Source URL" didn't paste the clipboard (see above). Since fixed in paste-with-source.
 - Possible option: an output format that renders cleanly in Live Preview too, such as `<sup><a href="…">[4]</a></sup>`, at the cost of HTML in the note.
 - Possible option: adopt the declarative settings API (searchable settings) if `minAppVersion` is ever raised to 1.13.
