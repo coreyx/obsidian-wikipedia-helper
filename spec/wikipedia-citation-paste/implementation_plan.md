@@ -114,7 +114,7 @@ None at this time. Resolved at approval:
 - [x] **TASK-18:** On push to `main`, pull requests and manual dispatch, run on ubuntu-latest: install with the pinned pnpm, then `lint`, `format`, `build` and `test:scratch`.
 
 #### [NEW] `.github/workflows/release.yml`
-- [ ] **TASK-19:** Adapted from obsidian-project-docs. On a bare version tag (`0.1.0`) or a pre-release tag (`0.1.0-beta.1`):
+- [x] **TASK-19:** Adapted from obsidian-project-docs. On a bare version tag (`0.1.0`) or a pre-release tag (`0.1.0-beta.1`):
   - Check the tag against `manifest.json`, then run lint, build and `test:scratch`.
   - Stamp the tag into the released `manifest.json`, and upload `main.js` and `manifest.json`. There's no `styles.css`, since the plugin has none.
   - A pre-release tag is published as a GitHub pre-release, for BRAT; a plain tag becomes a draft.

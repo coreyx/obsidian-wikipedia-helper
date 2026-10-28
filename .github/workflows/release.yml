@@ -1,0 +1,64 @@
+name: Release
+
+# Builds a GitHub release when a version tag is pushed. Obsidian and BRAT install the plugin from a
+# release's main.js and manifest.json, and expect the tag, the release name and the released
+# manifest's version to be the same bare version (0.1.0, not v0.1.0). The plugin has no styles.css.
+# - A plain version tag (0.1.0) must match manifest.json, and makes a draft release; publishing it
+#   stays manual.
+# - A pre-release tag (0.1.0-beta.1) must be a pre-release of manifest.json's version. It's
+#   published at once as a GitHub pre-release, for beta testers installing with BRAT, with the tag
+#   stamped into the released manifest.json only, so the repo's manifest.json is unchanged.
+on:
+  push:
+    tags: ["[0-9]+.[0-9]+.[0-9]+", "[0-9]+.[0-9]+.[0-9]+-*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      # Installs the pnpm version pinned in package.json's packageManager.
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Check the tag against the manifest
+        run: |
+          version=$(node -p "require('./manifest.json').version")
+          case "$GITHUB_REF_NAME" in
+            "$version") ;;
+            "$version"-*) ;;
+            *)
+              echo "Tag $GITHUB_REF_NAME isn't manifest.json's version $version, or a pre-release of it." >&2
+              exit 1
+              ;;
+          esac
+      - run: pnpm run lint
+      - run: pnpm run build
+      - run: pnpm run test:scratch
+      - name: Gather the release files
+        run: |
+          mkdir release
+          cp main.js release/
+          node -e "
+            const fs = require('fs');
+            const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+            manifest.version = process.env.GITHUB_REF_NAME;
+            fs.writeFileSync('release/manifest.json', JSON.stringify(manifest, null, 2) + '\n');
+          "
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          case "$GITHUB_REF_NAME" in
+            *-*) kind="--prerelease"; notes="Beta of $GITHUB_REF_NAME for testing with BRAT. See CHANGELOG.md." ;;
+            *) kind="--draft"; notes="See CHANGELOG.md for what changed in $GITHUB_REF_NAME." ;;
+          esac
+          gh release create "$GITHUB_REF_NAME" release/main.js release/manifest.json \
+            $kind --title "$GITHUB_REF_NAME" --notes "$notes"
