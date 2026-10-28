@@ -38,3 +38,15 @@ function citationAnchors(root: ParentNode): { anchor: Element; link: CitationLin
 export function findCitationLinks(root: ParentNode): CitationLink[] {
   return citationAnchors(root).map(({ link }) => link);
 }
+
+/**
+ * Says whether copied HTML carries MediaWiki's citation markup: a bracketed link inside
+ * `sup.reference`, or one pointing at a `#cite_note-` footnote. Used only when the page the HTML
+ * came from is unknown, as the evidence that it came from a MediaWiki site such as Wikipedia.
+ */
+export function hasMediaWikiCitationMarkup(root: ParentNode): boolean {
+  return citationAnchors(root).some(
+    ({ anchor, link }) =>
+      anchor.closest("sup.reference") !== null || link.href.includes("#cite_note-"),
+  );
+}
