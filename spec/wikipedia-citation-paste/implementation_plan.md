@@ -82,7 +82,7 @@ None at this time. Resolved at approval:
 ### Plugin
 
 #### [NEW] `src/sourceUrl.ts`
-- [ ] **TASK-12:** `readSourceUrl(): string | null`: synchronously read the copied page's address from Electron's clipboard: Windows `HTML Format` through `sourceUrlFromHtmlFormat`, then `org.chromium.source-url`, then Safari's `com.apple.webarchive`. Each read is wrapped in `try`/`catch`. The function returns `null` when Electron isn't available (mobile) or nothing gives an `http(s)` address.
+- [x] **TASK-12:** `readSourceUrl(): string | null`: synchronously read the copied page's address from Electron's clipboard: Windows `HTML Format` through `sourceUrlFromHtmlFormat`, then `org.chromium.source-url`, then Safari's `com.apple.webarchive`. Each read is wrapped in `try`/`catch`. The function returns `null` when Electron isn't available (mobile) or nothing gives an `http(s)` address.
 
 #### [NEW] `src/pasteFix.ts`
 - [ ] **TASK-13:** `PendingPaste` state plus the CodeMirror extension that applies the fix, implemented in whichever form TASK-1 shows works:
