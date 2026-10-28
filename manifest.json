@@ -1,0 +1,9 @@
+{
+  "id": "wikipedia-helper",
+  "name": "Wikipedia Helper",
+  "version": "0.1.0",
+  "minAppVersion": "1.4.0",
+  "description": "Keeps citation links such as [4] clickable when you paste from Wikipedia, instead of turning them into wikilinks.",
+  "author": "Corey Struzan",
+  "isDesktopOnly": false
+}

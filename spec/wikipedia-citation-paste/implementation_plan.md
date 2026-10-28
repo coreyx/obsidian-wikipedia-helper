@@ -62,7 +62,7 @@ None at this time. Resolved at approval:
 - [x] **TASK-3:** Add the build and lint config, adapted from obsidian-project-docs: esbuild bundles `src/main.ts` to `main.js` as CJS with `obsidian`, `electron`, `@codemirror/*` and `@lezer/*` external; strict TypeScript; `.gitignore` covers `node_modules/`, `main.js`, `data.json` and `spike/`.
 
 #### [NEW] `manifest.json`, `versions.json`, `version-bump.mjs`
-- [ ] **TASK-4:** Add `manifest.json` (`id: wikipedia-helper`, `name: Wikipedia Helper`, `version: 0.1.0`, `minAppVersion: 1.4.0`, `isDesktopOnly: false`, author Corey Struzan), `versions.json` (`{"0.1.0": "1.4.0"}`) and `version-bump.mjs` copied from obsidian-project-docs.
+- [x] **TASK-4:** Add `manifest.json` (`id: wikipedia-helper`, `name: Wikipedia Helper`, `version: 0.1.0`, `minAppVersion: 1.4.0`, `isDesktopOnly: false`, author Corey Struzan), `versions.json` (`{"0.1.0": "1.4.0"}`) and `version-bump.mjs` copied from obsidian-project-docs.
 
 #### [NEW] `LICENSE`, `README.md`, `CHANGELOG.md`
 - [ ] **TASK-5:** Add the MIT license (Corey Struzan), a README, and a CHANGELOG with an `Unreleased` section. The README covers what goes wrong and why, what the plugin changes (with a before/after example in synthetic text), the site list and the unknown-source setting, the repair command, how it coexists with other paste plugins, and installing with BRAT (add `coreyx/obsidian-wikipedia-helper`).
