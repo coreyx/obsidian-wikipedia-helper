@@ -4,13 +4,17 @@ import { defineConfig } from "eslint/config";
 import obsidianmd from "eslint-plugin-obsidianmd";
 
 export default defineConfig([
-  { ignores: ["main.js", "node_modules/"] },
+  { ignores: ["main.js", "node_modules/", "spike/"] },
   ...obsidianmd.configs.recommended,
   {
     languageOptions: {
       parserOptions: {
         projectService: { allowDefaultProject: ["*.mjs"] },
       },
+    },
+    rules: {
+      // Proper nouns the UI text names, which stay capitalized in sentence case.
+      "obsidianmd/ui/sentence-case": ["warn", { ignoreWords: ["Wikipedia", "Wikipedia's"] }],
     },
   },
   {

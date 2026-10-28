@@ -101,7 +101,7 @@ None at this time. Resolved at approval:
 - [ ] **TASK-16:** Command `repair-citation-links` ("Repair citation links in selection or note"), an `editorCallback`. It runs `repairMangledLinks` over the selection if there is one, else the whole note, and applies the result as a single `editor.transaction` (one undo step). A `Notice` reports the count ("Repaired 7 citation links" / "No broken citation links found").
 
 #### [NEW] `src/settings.ts`
-- [ ] **TASK-17:** `WikipediaHelperSettings { enabled: boolean; sites: string[]; unknownSource: "citation-markup" | "skip"; anySite: boolean }`, with defaults `true`, `["wikipedia.org"]`, `"citation-markup"`, and `false`. The `PluginSettingTab` has:
+- [x] **TASK-17:** `WikipediaHelperSettings { enabled: boolean; sites: string[]; unknownSource: "citation-markup" | "skip"; anySite: boolean }`, with defaults `true`, `["wikipedia.org"]`, `"citation-markup"`, and `false`. The `PluginSettingTab` has:
   - A toggle: "Fix citation links on paste".
   - A textarea: "Sites", one per line, normalized and de-duplicated on save, with a description saying subdomains are included.
   - A dropdown: "When the source site is unknown".
