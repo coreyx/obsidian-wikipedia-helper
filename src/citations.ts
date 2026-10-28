@@ -1,3 +1,5 @@
+import { hostMatches } from "./sites";
+
 /**
  * A link in copied HTML whose whole text is one bracketed label, such as `<a href="…">[4]</a>`.
  * Obsidian's HTML-to-Markdown conversion writes these as `[[4]](…)`, which reads as a wikilink.
@@ -176,5 +178,21 @@ export function fixCitationLinks(
     const label = collapseWhitespace(unescapeMarkdown(link.rawLabel));
     return recorded.has(`${label}\n${decodeSafely(link.target)}`);
   });
+  return { text: escapeLinks(markdown, matched), count: matched.length };
+}
+
+/**
+ * Repairs citation links in a note that was pasted before the plugin was on, with no copied HTML
+ * to say which links were citations. A `[[label]](url)` is rewritten only when the URL is an
+ * absolute `http(s)` address on a listed site, so a real wikilink followed by a parenthetical
+ * (`[[Note]](aside)`) is never touched.
+ */
+export function repairMangledLinks(
+  markdown: string,
+  sites: readonly string[],
+): { text: string; count: number } {
+  const matched = findMangledLinks(markdown).filter(
+    (link) => /^https?:\/\//i.test(link.target) && hostMatches(link.target, sites),
+  );
   return { text: escapeLinks(markdown, matched), count: matched.length };
 }
