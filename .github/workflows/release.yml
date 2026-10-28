@@ -8,6 +8,8 @@ name: Release
 # - A pre-release tag (0.1.0-beta.1) must be a pre-release of manifest.json's version. It's
 #   published at once as a GitHub pre-release, for beta testers installing with BRAT, with the tag
 #   stamped into the released manifest.json only, so the repo's manifest.json is unchanged.
+# The release's description is the tag's section of RELEASE_NOTES.md, or, without one, notes built
+# from the tag's feat and fix commits (see release-notes.mjs).
 on:
   push:
     tags: ["[0-9]+.[0-9]+.[0-9]+", "[0-9]+.[0-9]+.[0-9]+-*"]
@@ -21,6 +23,9 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The whole history and its tags, so release-notes.mjs can find the previous tag.
+          fetch-depth: 0
       # Installs the pnpm version pinned in package.json's packageManager.
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v4
@@ -52,13 +57,15 @@ jobs:
             manifest.version = process.env.GITHUB_REF_NAME;
             fs.writeFileSync('release/manifest.json', JSON.stringify(manifest, null, 2) + '\n');
           "
+      - name: Write the release notes
+        run: node release-notes.mjs "$GITHUB_REF_NAME" release-notes.md
       - name: Create the release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           case "$GITHUB_REF_NAME" in
-            *-*) kind="--prerelease"; notes="Beta of $GITHUB_REF_NAME for testing with BRAT. See CHANGELOG.md." ;;
-            *) kind="--draft"; notes="See CHANGELOG.md for what changed in $GITHUB_REF_NAME." ;;
+            *-*) kind="--prerelease" ;;
+            *) kind="--draft" ;;
           esac
           gh release create "$GITHUB_REF_NAME" release/main.js release/manifest.json \
-            $kind --title "$GITHUB_REF_NAME" --notes "$notes"
+            $kind --title "$GITHUB_REF_NAME" --notes-file release-notes.md
