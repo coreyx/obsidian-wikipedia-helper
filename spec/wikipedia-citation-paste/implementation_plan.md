@@ -98,7 +98,7 @@ None at this time. Resolved at approval:
   - It then decides on the source. With `settings.anySite` on, the source isn't checked. Otherwise it reads `readSourceUrl()`, and a known address must pass `hostMatches(url, settings.sites)`. An unknown one follows `settings.unknownSource`: `"citation-markup"` acts only when `hasMediaWikiCitationMarkup`, and `"skip"` doesn't act.
   - When it does act, it arms `PendingPaste` with the links for that editor's view.
   - Any exception is caught and logged with `console.error`. Since nothing was cancelled, the native paste is unaffected.
-- [ ] **TASK-16:** Command `repair-citation-links` ("Repair citation links in selection or note"), an `editorCallback`. It runs `repairMangledLinks` over the selection if there is one, else the whole note, and applies the result as a single `editor.transaction` (one undo step). A `Notice` reports the count ("Repaired 7 citation links" / "No broken citation links found").
+- [x] **TASK-16:** Command `repair-citation-links` ("Repair citation links in selection or note"), an `editorCallback`. It runs `repairMangledLinks` over the selection if there is one, else the whole note, and applies the result as a single `editor.transaction` (one undo step). A `Notice` reports the count ("Repaired 7 citation links" / "No broken citation links found").
 
 #### [NEW] `src/settings.ts`
 - [x] **TASK-17:** `WikipediaHelperSettings { enabled: boolean; sites: string[]; unknownSource: "citation-markup" | "skip"; anySite: boolean }`, with defaults `true`, `["wikipedia.org"]`, `"citation-markup"`, and `false`. The `PluginSettingTab` has:

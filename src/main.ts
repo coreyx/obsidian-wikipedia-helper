@@ -1,6 +1,6 @@
 import type { EditorView } from "@codemirror/view";
-import { type Editor, Plugin, type Vault } from "obsidian";
-import { findCitationLinks, hasMediaWikiCitationMarkup } from "./citations";
+import { type Editor, Notice, Plugin, type Vault } from "obsidian";
+import { findCitationLinks, hasMediaWikiCitationMarkup, repairMangledLinks } from "./citations";
 import { PasteFixer } from "./pasteFix";
 import { readSettings, type WikipediaHelperSettings } from "./settings";
 import { WikipediaHelperSettingTab } from "./settingTab";
@@ -28,6 +28,11 @@ export default class WikipediaHelperPlugin extends Plugin {
     this.registerEvent(
       this.app.workspace.on("editor-paste", (evt, editor) => this.handlePaste(evt, editor)),
     );
+    this.addCommand({
+      id: "repair-citation-links",
+      name: "Repair citation links in selection or note",
+      editorCallback: (editor) => this.repairCitationLinks(editor),
+    });
     this.addSettingTab(new WikipediaHelperSettingTab(this.app, this));
   }
 
@@ -65,6 +70,30 @@ export default class WikipediaHelperPlugin extends Plugin {
       // Nothing has been cancelled, so Obsidian's paste goes ahead unfixed.
       console.error("Wikipedia Helper: couldn't check the paste", error);
     }
+  }
+
+  /**
+   * Repairs citation links pasted the broken way, in the selection if there is one, else in the
+   * whole note. Only links to a listed site are changed, whatever the "any site" setting says,
+   * because without the copied HTML a citation can't be told from a wikilink followed by a link.
+   * The backslashes go in as one editor transaction, so one undo restores the text.
+   */
+  private repairCitationLinks(editor: Editor): void {
+    const hasSelection = editor.somethingSelected();
+    const text = hasSelection ? editor.getSelection() : editor.getValue();
+    const base = hasSelection ? editor.posToOffset(editor.getCursor("from")) : 0;
+    const fix = repairMangledLinks(text, this.settings.sites);
+    if (fix.count === 0) {
+      new Notice("No broken citation links found.");
+      return;
+    }
+    editor.transaction({
+      changes: fix.escapeAt.map((offset) => ({
+        from: editor.offsetToPos(base + offset),
+        text: "\\",
+      })),
+    });
+    new Notice(`Repaired ${fix.count} citation ${fix.count === 1 ? "link" : "links"}.`);
   }
 
   /**
