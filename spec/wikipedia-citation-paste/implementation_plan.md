@@ -47,7 +47,7 @@ None at this time. Resolved at approval:
 ### Feasibility check
 
 #### [NEW] `spike/` (deleted once TASK-1 is done; never committed)
-- [ ] **TASK-1:** In the test vault, with a throwaway plugin build, record what Obsidian's native paste of Wikipedia HTML does to the editor, then try both ways of applying the fix and report which one works:
+- [x] **TASK-1:** In the test vault, with a throwaway plugin build, record what Obsidian's native paste of Wikipedia HTML does to the editor, then try both ways of applying the fix and report which one works:
   - The transactions it dispatches: how many, their `userEvent` annotation (is it `input.paste`?), and whether they happen synchronously after `editor-paste` handlers return.
   - Whether an `EditorState.transactionFilter` can rewrite the inserted text of that transaction, and still leave the cursor at the end of the paste with one undo step.
   - If it can't, a follow-up transaction from an `EditorView.updateListener`: does it reliably see the paste, and how does undo behave?
