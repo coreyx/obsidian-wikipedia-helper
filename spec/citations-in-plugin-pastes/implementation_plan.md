@@ -37,7 +37,7 @@ None at this time.
 ### The fixer
 
 #### [MODIFY] `src/pasteFix.ts`
-- [ ] **TASK-1:** In `PasteFixer.filter`, fix the first doc-changing transaction of the armed editor whatever its user event, instead of only `input.paste`. Keep the start-state check that tells the armed editor's transactions from other editors', the disarm after that one transaction, the disarm on the next task, and the sequential one-character insertions. Update the class and method doc comments: the transaction is Obsidian's paste or a plugin's insert made while handling it.
+- [x] **TASK-1:** In `PasteFixer.filter`, fix the first doc-changing transaction of the armed editor whatever its user event, instead of only `input.paste`. Keep the start-state check that tells the armed editor's transactions from other editors', the disarm after that one transaction, the disarm on the next task, and the sequential one-character insertions. Update the class and method doc comments: the transaction is Obsidian's paste or a plugin's insert made while handling it.
 
 ### The paste handler
 

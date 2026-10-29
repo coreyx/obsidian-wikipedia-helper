@@ -16,9 +16,10 @@ export interface PendingPaste {
 }
 
 /**
- * Applies the citation fix to the one editor change a paste produces. The `editor-paste` handler
- * arms it; Obsidian then inserts the converted Markdown in a single `input.paste` transaction,
- * synchronously, before the paste event finishes. A CodeMirror transaction filter adds the
+ * Applies the citation fix to the one editor change a paste produces. The paste handler arms it,
+ * and the converted Markdown then arrives in a single transaction, synchronously, before the paste
+ * event finishes: Obsidian's own `input.paste`, or the insert of a plugin that took the paste,
+ * such as Table Formatter's `replaceSelection`. A CodeMirror transaction filter adds the
  * backslashes to that same transaction, so the paste and its fix are one change and one undo step.
  */
 export class PasteFixer {
@@ -47,15 +48,15 @@ export class PasteFixer {
   }
 
   /**
-   * Passes every transaction through unchanged except the armed paste. Before a transaction
-   * applies, its editor's `state` is still the transaction's start state, which is how the armed
-   * editor's transaction is told apart from another editor's.
+   * Passes every transaction through unchanged except the armed paste: the first change to the
+   * armed editor, whatever its user event, since a plugin's insert carries none of Obsidian's.
+   * Before a transaction applies, its editor's `state` is still the transaction's start state,
+   * which is how the armed editor's transaction is told apart from another editor's.
    */
   private filter(tr: Transaction): Transaction | TransactionSpec[] {
     const pending = this.pending;
     if (!pending || !tr.docChanged || tr.startState !== pending.view.state) return tr;
     this.disarm();
-    if (!tr.isUserEvent("input.paste")) return tr;
 
     // Each inserted range is fixed on its own, and the fix is a set of one-character insertions
     // positioned in the pasted document, so the paste's own cursor placement maps through intact.
