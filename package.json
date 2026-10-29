@@ -15,7 +15,7 @@
     "dev": "node esbuild.config.mjs",
     "lint": "eslint .",
     "format": "prettier --check .",
-    "test:scratch": "tsx scratch/test_citation_paste.ts",
+    "test:scratch": "tsx scratch/test_citation_paste.ts && tsx scratch/test_plugin_paste_citations.ts",
     "version": "node version-bump.mjs && git add manifest.json versions.json"
   },
   "devDependencies": {
