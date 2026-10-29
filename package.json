@@ -1,6 +1,6 @@
 {
   "name": "obsidian-wikipedia-helper",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Obsidian plugin that keeps Wikipedia citation links intact when you paste from Wikipedia.",
   "license": "MIT",

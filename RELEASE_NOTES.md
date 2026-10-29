@@ -1,5 +1,19 @@
 # Release notes
 
+## 0.1.1 - 2026-10-29
+
+A fix for citations in pastes that another plugin converts.
+
+### Citations are fixed when another plugin handles the paste
+
+Some plugins take over a paste and insert their own conversion instead of Obsidian's. Table Formatter does this when you copy a Wikipedia table. Until now, the citations in those pastes stayed `[[2]](…)`, because Wikipedia Helper only fixed Obsidian's own paste. Now it checks every paste before any plugin handles it, so the citations in Table Formatter's table cells and in the text around the table come out as clickable `[2]` links. Plugin load order no longer matters, and pastes in pop-out windows are fixed too.
+
+As before, the plugin never cancels a paste, changes only the citation links it found in the copied HTML, and one undo removes the paste and the fix together.
+
+### Installing
+
+Install it with [BRAT](https://github.com/TfTHacker/obsidian42-brat): run **BRAT: Add a beta plugin for testing** and enter `coreyx/obsidian-wikipedia-helper`. If you already have it, use BRAT's update check to get this version.
+
 ## 0.1.0 - 2026-10-28
 
 The first release of Wikipedia Helper, for Obsidian 1.4.0 and later on desktop and mobile.
