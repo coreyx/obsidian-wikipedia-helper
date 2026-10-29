@@ -47,7 +47,7 @@ None at this time.
 ### Verification
 
 #### [NEW] `scratch/test_plugin_paste_citations.ts`
-- [ ] **TASK-3:** A regression script for this change, run with `tsx` like the existing one. The checks are listed under Verification Plan below.
+- [x] **TASK-3:** A regression script for this change, run with `tsx` like the existing one. The checks are listed under Verification Plan below.
 
 #### [MODIFY] `package.json`
 - [ ] **TASK-4:** Make `test:scratch` run both scratch scripts, `scratch/test_citation_paste.ts` and then `scratch/test_plugin_paste_citations.ts`, so CI and the Release workflow run both.
