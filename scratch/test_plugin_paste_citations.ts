@@ -132,7 +132,7 @@ function replaceSelection(state: EditorState, text: string) {
   const late = new PasteFixer();
   const lateState = editorWith(late, "");
   late.arm({ state: lateState }, links);
-  await new Promise((resolve) => setTimeout(resolve, 0));
+  await new Promise((resolve) => window.setTimeout(resolve, 0));
   const lateDoc = replaceSelection(lateState, inserted).newDoc.toString();
   check(
     "4. Another editor's change is ignored, one change is fixed, and the fixer disarms on the next task",
