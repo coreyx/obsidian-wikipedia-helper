@@ -15,18 +15,26 @@ type VaultWithConfig = Vault & { getConfig?: (key: string) => unknown };
 
 /**
  * Wikipedia Helper: keeps citation links such as `[4]` clickable when pasting from Wikipedia.
- * Obsidian's paste runs untouched; for pastes from a listed site, the plugin escapes the brackets
- * of the citation links it found in the copied HTML, inside the paste's own editor change.
+ * The paste runs untouched, whether Obsidian or another plugin handles it; for pastes from a listed
+ * site, the plugin escapes the brackets of the citation links it found in the copied HTML, inside
+ * the paste's own editor change.
  */
 export default class WikipediaHelperPlugin extends Plugin {
   override settings: WikipediaHelperSettings = readSettings(null);
   private readonly fixer = new PasteFixer();
+  private readonly onPaste = (evt: ClipboardEvent): void => this.handlePaste(evt);
 
   override async onload(): Promise<void> {
     this.settings = readSettings(await this.loadData());
     this.registerEditorExtension(this.fixer.extension);
+    // In the capture phase on the document, the check runs before CodeMirror and every plugin's
+    // `editor-paste` handler, whatever order the plugins loaded in, so a plugin that takes the
+    // paste and inserts its own conversion, such as Table Formatter, still gets its citations fixed.
+    this.registerDomEvent(document, "paste", this.onPaste, { capture: true });
     this.registerEvent(
-      this.app.workspace.on("editor-paste", (evt, editor) => this.handlePaste(evt, editor)),
+      this.app.workspace.on("window-open", (_win, popout) =>
+        this.registerDomEvent(popout.document, "paste", this.onPaste, { capture: true }),
+      ),
     );
     this.addCommand({
       id: "repair-citation-links",
@@ -46,19 +54,23 @@ export default class WikipediaHelperPlugin extends Plugin {
   }
 
   /**
-   * Decides whether a paste is one to fix and, if it is, arms the fixer for the editor change
-   * Obsidian's paste is about to make. It never cancels the paste or changes the event, so
-   * Obsidian and other paste plugins see it exactly as they would without this plugin.
+   * Decides whether a paste into the active note's editor is one to fix and, if it is, arms the
+   * fixer for the editor change the paste is about to make, by Obsidian or by a plugin that takes
+   * the paste. It runs before either, and never cancels the paste or stops the event, so Obsidian
+   * and other paste plugins see it exactly as they would without this plugin.
    */
-  private handlePaste(evt: ClipboardEvent, editor: Editor): void {
+  private handlePaste(evt: ClipboardEvent): void {
     try {
+      // Only an earlier capture listener could have cancelled the paste by now; if one did,
+      // nothing will be inserted.
       if (!this.settings.enabled || evt.defaultPrevented) return;
+      const view = (this.app.workspace.activeEditor?.editor as EditorWithView | undefined)?.cm;
+      // Pastes into anything else, such as a settings field or the search box, aren't for notes.
+      if (!view || !view.contentDOM.contains(evt.target as Node | null)) return;
       const data = evt.clipboardData;
       if (!data || data.files.length > 0) return;
       const html = data.getData("text/html");
       if (!html || !this.autoConvertHtml()) return;
-      const view = (editor as EditorWithView).cm;
-      if (!view) return;
 
       const root = new DOMParser().parseFromString(html, "text/html");
       const links = findCitationLinks(root);
