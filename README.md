@@ -14,7 +14,7 @@ Obsidian reads `[[4]]` as a wikilink to a note named "4". The citation shows up 
 
 ## What the plugin changes
 
-Obsidian's paste runs exactly as it always does. For a paste copied from a site on your list, the plugin then escapes the brackets of the citation links it found in the copied HTML, and nothing else:
+The paste runs exactly as it always does, whether Obsidian or another plugin handles it. For a paste copied from a site on your list, the plugin then escapes the brackets of the citation links it found in the copied HTML, and nothing else:
 
 ```markdown
 Example text with a claim.[\[4\]](https://en.wikipedia.org/wiki/Example#cite_note-4)
@@ -22,7 +22,7 @@ Example text with a claim.[\[4\]](https://en.wikipedia.org/wiki/Example#cite_not
 
 That renders as a clickable `[4]` that opens the footnote on Wikipedia. The fix is part of the paste itself, so undoing the paste undoes the fix with it. In Live Preview, Obsidian shows the escaped brackets as dimmed `[` `]` around the link while Reading view shows just `[4]`; that's how its editor displays escapes.
 
-The plugin never cancels a paste and never converts HTML itself. Only links whose whole text is one bracketed label, such as `[4]`, `[a]` or `[citation needed]`, are changed, and only where the label and address match a link in the copied HTML. Literal `[[Note]]` text, ordinary links and every other part of the paste are left as Obsidian wrote them.
+The plugin never cancels a paste and never converts HTML itself. Only links whose whole text is one bracketed label, such as `[4]`, `[a]` or `[citation needed]`, are changed, and only where the label and address match a link in the copied HTML. Literal `[[Note]]` text, ordinary links and every other part of the paste are left as they were written.
 
 The plugin follows Obsidian's **Settings → Editor → Auto convert HTML** switch: with it off, Obsidian pastes plain text and there's nothing to fix.
 
@@ -41,8 +41,9 @@ The command always uses the Sites list, even with **Fix citation links from any 
 
 ## Other paste plugins
 
-The plugin never calls `preventDefault()` on a paste, and it does nothing when another plugin already has. That keeps it out of the way of plugins that handle pastes themselves:
+The plugin never calls `preventDefault()` or stops a paste event, so plugins that handle pastes themselves see every paste as they would without it. It checks the paste before any of them run, whatever order the plugins load in, and fixes the citations in whatever the paste inserts, from Obsidian or from a plugin that converts the paste itself. Anything a plugin inserts later, after the paste has finished, such as an uploaded image's link, is left alone.
 
+- [Table Formatter](https://github.com/coreyx/obsidian-table-formatter) converts pastes that contain a table into a Markdown table and inserts that instead of Obsidian's paste. The citations in its table cells and in the text around the table are fixed, in the same undo step. The two added backslashes per citation leave the table's source columns slightly uneven, which doesn't change how it renders.
 - [Paste with Source](https://github.com/coreyx/obsidian-paste-with-source) in its default-plus-source mode lets Obsidian's paste run and then adds its "From: …" line. The citations in the pasted text are fixed, and the "From: …" line is left alone.
 - [Link or Card](https://github.com/coreyx/obsidian-link-or-card) handles pastes of a bare URL, which have no citation links, so the two never act on the same paste.
 

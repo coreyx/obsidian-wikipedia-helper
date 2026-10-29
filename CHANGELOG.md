@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+- Citation links in pastes that another plugin converts and inserts itself, such as a Wikipedia table pasted with Table Formatter, are now fixed too. Before, they stayed `[[2]](…)`, because the plugin only fixed Obsidian's own paste and stepped aside once another plugin had taken it. The plugin now checks every paste before other plugins' paste handlers run, so load order doesn't matter, including in pop-out windows. It still never cancels a paste, changes only the citation links found in the copied HTML, and undoes with the paste.
+
 ## [0.1.0] - 2026-10-28
 
 ### Added
